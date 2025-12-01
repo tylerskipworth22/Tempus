@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Tyler Skipworth">
+    <meta name="description" content="senior project">
+    <meta name="keywords" content="time capsule">
+    <!-- add more keywords -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tempus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="img/time-capsule.png">
+</head>
+
+<body>
+	<header class="header">
+		<div class="logo-container">
+			<a href="#" class="logo-link">
+				<img src="img/time-capsule.png" alt="Tempus Logo" class="logo">
+				<h1 class="site-title">Tempus</h1>
+			</a>
+		</div>
+		
+		<nav class="navbar">
+			<ul class="nav-links">
+				<!--
+				<li><a href="login.html">Login</a></li>
+				<li><a href="account.php">Account</a></li>
+				<li><a href="logout.php">Log Out</a></li>
+			-->
+			</ul>
+		</nav>
+	</header>
+
+	<br><br>
+
+	<!-- used https://www.w3schools.com/howto/howto_js_slideshow.asp to make slideshow -->
+
+	<section class="slideshow">
+
+		<div class="mySlide fade">
+			<div class="number-text">1/4</div>
+			<img src="img/img1.jpg" alt="Sunset">
+			<div class="text">Sunset</div>
+		</div>
+
+		<div class="mySlide fade">
+			<div class="number-text">2/4</div>
+			<img src="img/img2.jpg" alt="Stadium during Ole Miss vs Arkansas Football game 2025">
+			<div class="text">Ole Miss vs Arkansas 2025</div>
+		</div>
+
+		<div class="mySlide fade">
+			<div class="number-text">3/4</div>
+			<img src="img/img3.jpg" alt="Trombone player performing the 'Grove Show' at Ole Miss">
+			<div class="text">Grove Show</div>
+		</div>
+
+		<div class="mySlide fade">
+			<div class="number-text">4/4</div>
+			<img src="img/img4.jpg" alt="Space Scenery">
+			<div class="text">Space Scenery in Video Game</div>
+		</div>
+
+		<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+		<a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+	</section>
+
+		<br>
+
+		<div style="text-align:center">
+			<span class="dot" onclick="currentSlide(1)"></span>
+			<span class="dot" onclick="currentSlide(2)"></span>
+			<span class="dot" onclick="currentSlide(3)"></span>
+			<span class="dot" onclick="currentSlide(4)"></span>
+		</div>
+
+
+	<section class="start">
+		<h2>Preserve your memories for the future</h2>
+		<p>
+			Create digital capsules with memories, photos, or media, and unlock at a date of your choice.
+		</p>
+		<button onclick="window.location.href='signup.html'">Get Started</button>
+	</section>
+
+	<section class="features">
+		<h3>How It Works</h3>
+		<div class="features-list">
+      		
+      		<div class="feature">
+        		<h4>Create</h4>
+        		<p>
+        			Make a capsule and add photos, videos, audio, and documents.
+        		</p>
+      		</div>
+      		
+      		<div class="feature">
+        		<h4>Lock</h4>
+        		<p>
+        			Choose a future date when your capsule unlocks.
+        		</p>
+      		</div>
+      		
+      		<div class="feature">
+        		<h4>Revisit</h4>
+        		<p>
+        			Revisit your memories when your capsule unlocks.
+        		</p>
+      		</div>
+      		
+    	</div>
+  	</section>
+
+  	<br><br>
+
+  	<footer class="footer">
+  		<p>2025 Tyler Skipworth</p>
+  	</footer>
+
+  	<script src="slideshow.js"></script>
+  	<script type="module" src="firebase.js"></script>
+  	<script type="module" src="nav.js"></script>
+
+</body>
+</html>
+
+
+
+
+

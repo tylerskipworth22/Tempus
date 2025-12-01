@@ -1,0 +1,1380 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Georgia, serif;
+    background: #FAF9F3;
+    color: #2C2A28; /* text*/
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: "Garamond", "Georgia", serif;
+    text-align: center;
+    color: #1F1E1D;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+h2 {
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+p {
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #2C2A28;
+}
+
+/*header/navbar*/
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #3E3A36; /* dark gray for contrast */
+    color: #FDF9F2; /* off-white text */
+    padding: 0.75rem 2rem;
+    border-top: 3px solid #A77C5F; /* warm accent */
+    border-bottom: 3px solid #A77C5F;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Logo container */
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo {
+    height: 55px;
+    width: auto;
+    margin-right: 12px;
+}
+
+.site-title {
+    font-family: "Garamond", "Georgia", serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #FDF9F2;
+}
+
+/* Navigation */
+.navbar .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar a {
+    color: #FDF9F2;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: #4B8DF8; /* blue accent hover */
+}
+
+header, footer {
+    background: #3E3A36; /* dark gray for contrast */
+    color: #FDF9F2; /* readable off-white text */
+    padding: 1rem;
+    text-align: center;
+    border-top: 3px solid #A77C5F; /* warm accent */
+    border-bottom: 3px solid #A77C5F;
+}
+
+header h1, footer p {
+    color: inherit; /* uses the off-white color from header/footer */
+}
+
+/*slideshow*/
+
+.slideshow {
+    max-width: 1000px;
+    position: relative;
+    margin: auto;
+}
+
+.mySlide {
+    display: none;
+}
+
+.mySlide img {
+    width: 100%;
+    height-max: 650px;
+    border-radius: 6px;
+}
+
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transiton: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+}
+
+.next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.prev:hover, .next:hover {
+    background-color: rgba(0,0,0,0.8);
+}
+
+.text {
+    color: white;
+    font-size: 15px;
+    padding: 8px 12px;
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+.number-text {
+    color: black;
+    font-size: 25px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 0;
+}
+
+.dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6 ease;
+}
+
+.active, .dot:hover {
+    background-color: #717171;
+}
+
+.fade {
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+
+@keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+
+/*index*/
+
+.nav-class {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0;
+    color: white;
+}
+
+.nav-class a {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-class a:hover {
+    color: #4B8DF8;
+}
+
+.start {
+    text-align: center;
+    padding: 3rem;
+}
+
+.start button {
+    background-color: #4B8DF8;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.start button:hover {
+    background-color: #3a6fd2;
+}
+
+.features {
+    padding: 1rem;
+    text-align: center;
+}
+
+.features-list {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.feature {
+    background: #E0E4F1;
+    padding: 1rem;
+    max-width: 12rem;
+}
+
+/*create */
+
+.create-form {
+    text-align: center;
+}
+
+.create-form button {
+    background-color: #4B8DF8;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.create-form button:hover {
+    background-color: #3a6fd2;
+}
+
+/*login*/
+
+.login-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+    margin: 3rem auto;
+}
+
+.login-container label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.login-container input[type="text"],
+.login-container input[type="password"],
+.login-container input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.login-container input[type="submit"],
+.login-container button {
+    background-color: #4B8DF8;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 100%;
+}
+
+.login-container input[type="submit"]:hover,
+.login-container button:hover {
+    background-color: #3a6fd2;
+}
+
+.login-container a {
+    color: #4B8DF8;
+    text-decoration: none;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
+
+
+/*account*/
+
+.account-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    text-align: center;
+}
+
+.capsule {
+    justify-content: center;
+    background: white;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+}
+
+.account-container input[type="submit"],
+.account-container button {
+    background-color: #4B8DF8;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 100%;
+}
+
+.account-container input[type="submit"]:hover,
+.account-container button:hover {
+    background-color: #3a6fd2;
+}
+
+/*modal*/
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ---------- CREATE Capsule FORM ---------- */
+.create-form {
+    background-color: white;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: left;
+}
+
+.create-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.6rem;
+}
+
+.create-form label {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.create-form input[type="text"],
+.create-form input[type="date"],
+.create-form textarea,
+.create-form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.create-form input:focus,
+.create-form textarea:focus {
+    border-color: #4B8DF8;
+    box-shadow: 0 0 0 3px rgba(75, 141, 248, 0.2);
+    outline: none;
+}
+
+.create-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.create-form button {
+    display: block;
+    width: 100%;
+    background-color: #4B8DF8;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.create-form button:hover {
+    background-color: #3a6fd2;
+}
+
+/* File list preview */
+#fileList {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    min-height: 40px;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.file-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    flex-wrap: wrap;
+}
+
+.file-preview {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-preview img,
+.file-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.file-preview audio {
+    width: 100%;
+}
+
+.file-item p {
+    flex: 1;
+    margin: 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.file-item input[type="text"] {
+    flex: 2;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.9rem;
+}
+
+.file-item button {
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.2s;
+}
+
+.file-item button:hover {
+    background-color: #c0392b;
+}
+
+/* ---------- EDIT Capsule PAGE ---------- */
+
+.create-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.create-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1F1E1D;
+}
+
+.create-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left;
+}
+
+.create-container label {
+    font-weight: bold;
+    color: #2C2A28;
+    margin-bottom: 5px;
+}
+
+.create-container input[type="text"],
+.create-container input[type="date"],
+.create-container textarea,
+.create-container input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.create-container textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.create-container input:focus,
+.create-container textarea:focus {
+    border-color: #4B8DF8;
+    box-shadow: 0 0 0 3px rgba(75,141,248,0.2);
+    outline: none;
+}
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    justify-content: flex-start;
+}
+
+.small-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    background-color: #fafafa;
+    flex-shrink: 0;
+}
+
+.file-item p {
+    margin: 0;
+    flex: 1;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.submit-btn, .cancel-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.submit-btn {
+    background-color: #4B8DF8;
+    color: white;
+}
+
+.submit-btn:hover {
+    background-color: #3a6fd2;
+}
+
+.cancel-btn {
+    background-color: #ccc;
+    color: #333;
+}
+
+.cancel-btn:hover {
+    background-color: #aaa;
+}
+
+/* ========== CAPSULE STATUS ========== */
+.capsule-status {
+    text-align: center;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    max-width: 500px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.capsule-status p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.capsule-status strong {
+    color: #222;
+}
+
+/* ======================
+   Capsule View Styling
+   ====================== */
+
+.capsule-view {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.capsule-info,
+.capsule-actions,
+.capsule-content {
+    margin-bottom: 2rem;
+}
+
+.capsule-desc {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.file-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    padding: 1rem;
+    text-align: center;
+}
+
+.file-preview {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.file-desc {
+    font-size: 0.9em;
+    color: #555;
+    margin-top: 0.3rem;
+}
+
+.file-link {
+    display: block;
+    margin-bottom: 0.5rem;
+    word-wrap: break-word;
+}
+
+/* ========== AUDIO FILES ========== */
+.audio-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.audio-preview audio {
+    width: 100%;
+    max-width: 250px;
+    outline: none;
+    border-radius: 6px;
+}
+
+.audio-preview .filename {
+    font-size: 0.85em;
+    color: #444;
+    text-align: center;
+    word-break: break-word;
+}
+
+/* ---------- MISC ---------- */
+.create-form p.file-size-note {
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+/* ========== MODERATOR DASHBOARD & VIEW STYLING ========== */
+
+.mod-dashboard .file-card,
+.mod-view .file-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mod-dashboard .file-card:hover,
+.mod-view .file-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+}
+
+.mod-dashboard .file-grid,
+.mod-view .file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.mod-dashboard .capsule-actions,
+.mod-view .capsule-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.mod-dashboard textarea,
+.mod-view textarea {
+    width: 100%;
+    min-height: 60px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding: 8px;
+    resize: vertical;
+}
+
+.mod-dashboard .submit-btn,
+.mod-dashboard .cancel-btn,
+.mod-view .submit-btn {
+    width: 100%;
+    text-align: center;
+}
+
+.mod-dashboard .view-btn,
+.mod-dashboard .approve-btn,
+.mod-dashboard .reject-btn,
+.mod-dashboard .warning-btn {
+    width: auto;            /* fit content */
+    padding: 8px 16px;      /* smaller padding for nicer buttons */
+    font-size: 0.95rem;
+    border-radius: 6px;
+    text-align: center;
+    display: inline-block;
+    margin: 4px 2px;        /* small spacing between buttons */
+}
+
+.mod-dashboard .view-btn:hover,
+.mod-dashboard .approve-btn:hover,
+.mod-dashboard .reject-btn:hover,
+.mod-dashboard .warning-btn:hover {
+    background-color: #3a6fd2;  /* hover effect */
+}
+
+.file-card img.file-preview,
+.file-card video.file-preview {
+    max-width: 100%;
+    max-height: 180px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.file-card audio.file-preview {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.file-card .file-link {
+    color: #4B8DF8;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.file-card .file-link:hover {
+    text-decoration: underline;
+}
+
+/* Capsule info section */
+.capsule-info {
+    background-color: #fdfdfd;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.capsule-info p {
+    margin: 6px 0;
+    font-size: 0.95rem;
+}
+
+/* ==============================
+   ADMIN DASHBOARD STYLING
+   ============================== */
+
+/* General layout consistency */
+.admin-section {
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Section headers */
+.admin-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: #222;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.4rem;
+}
+
+/* Moderator Table Styling */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.admin-table th, .admin-table td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.admin-table th {
+    background-color: #f8f8f8;
+    font-weight: 600;
+    color: #333;
+}
+
+.admin-table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.admin-table tr:hover {
+    background-color: #f0f7ff;
+}
+
+/* Buttons inside table */
+.admin-table .btn {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    transition: background-color 0.2s ease;
+}
+
+.admin-table .btn:hover {
+    background-color: #0056b3;
+}
+
+.admin-table .cancel-btn {
+    background-color: #dc3545;
+}
+
+.admin-table .cancel-btn:hover {
+    background-color: #b02a37;
+}
+
+/* Empty message */
+.admin-section p {
+    color: #555;
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+}
+
+/* ================= Admin View Container ================= */
+.admin-view {
+    max-width: 1000px;
+    margin: 80px auto 40px; /* top margin accounts for navbar */
+    padding: 20px;
+}
+
+/* ================= Media Grid ================= */
+.file-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* ================= Media Cards ================= */
+.file-card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    width: 220px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* ================= Media Previews ================= */
+.file-preview {
+    max-width: 100%;
+    height: auto;
+    margin-top: 5px;
+    border-radius: 4px;
+}
+
+.file-link {
+    display: block;
+    margin-top: 5px;
+    color: #4B8DF8;
+    text-decoration: none;
+}
+
+.file-link:hover {
+    text-decoration: underline;
+}
+
+/* ================= Buttons ================= */
+.submit-btn, .cancel-btn {
+    margin-top: 5px;
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.submit-btn {
+    background-color: #4B8DF8;
+    color: white;
+}
+
+.submit-btn:hover {
+    background-color: #3a6fd2;
+}
+
+.cancel-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #c0392b;
+}
+
+/* ================= Text/Info Styling ================= */
+.admin-view h1 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.admin-view p {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+edit-user-card {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 25px;
+    border-radius: 10px;
+    background-color: #f5f5f5;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.edit-user-card h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+.edit-user-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.edit-user-form input,
+.edit-user-form select {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-buttons .submit-btn,
+.form-buttons .cancel-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+}
+
+.form-buttons .submit-btn {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.form-buttons .cancel-btn {
+    background-color: #f44336;
+    color: #fff;
+}
+
+/* ===== MOD VIEW / ADMIN VIEW ===== */
+.mod-view {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.capsule-info {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.capsule-info h1 {
+    margin-bottom: 10px;
+    font-size: 2em;
+}
+
+.file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.file-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.file-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.file-card p {
+    margin: 5px 0;
+    text-align: center;
+}
+
+.file-preview {
+    max-width: 100%;
+    max-height: 250px;
+    margin: 10px 0;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.file-link {
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.file-link:hover {
+    text-decoration: underline;
+}
+
+.file-desc {
+    font-size: 0.9em;
+    color: #555;
+    text-align: center;
+    margin-top: 5px;
+}
+
+/* ===== Buttons ===== */
+.submit-btn {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    margin: 5px;
+    transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}
+
+.cancel-btn {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    margin: 5px;
+    transition: background-color 0.2s;
+}
+
+.cancel-btn:hover {
+    background-color: #c82333;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+/* ===== Capsule actions form ===== */
+.capsule-actions {
+    margin-bottom: 30px;
+}
+
+.capsule-actions textarea.create-form {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    margin-bottom: 10px;
+}
+
+.create-container form input[type="datetime-local"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+
+.create-container form input[type="datetime-local"]:focus {
+    border-color: #4B8DF8;
+    box-shadow: 0 0 0 3px rgba(75,141,248,0.2);
+    outline: none;
+}
+
+/* Buttons for lock capsule */
+.create-container .submit-btn {
+    background-color: #4CAF50; /* green */
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transition: background-color 0.3s, transform 0.2s;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.create-container .submit-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+.create-container .cancel-btn {
+    background-color: #e74c3c; /* red */
+    color: white;
+    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transition: background-color 0.3s, transform 0.2s;
+    width: 100%;
+}
+
+.create-container .cancel-btn:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* Error message */
+.create-container p.error {
+    color: #e74c3c;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+/* Invite Page Styles */
+.invite-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: #f4f6f8;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.invite-container h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.invite-container input[type="email"],
+.invite-container button {
+    padding: 0.6rem;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.invite-container button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background 0.2s;
+}
+
+.invite-container button:hover {
+    background-color: #45a049;
+}
+
+.invite-container .success {
+    color: green;
+    margin-bottom: 1rem;
+}
+
+.invite-container .error {
+    color: red;
+    margin-bottom: 1rem;
+}
+
+.invite-container a {
+    display: inline-block;
+    margin-top: 1rem;
+    text-decoration: none;
+    color: #555;
+}
+
+.invite-container a:hover {
+    text-decoration: underline;
+}
+
+.uploader-tag {
+    font-size: 0.85rem;
+    color: #555;
+    font-style: italic;
+    margin: 4px 0 8px;
+}
+
+
+@media (max-width: 700px) {
+
+    /*index*/
+    .features-list {
+        flex-direction: column;
+        align-items: center;
+    }
+}

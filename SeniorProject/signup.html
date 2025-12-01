@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Tyler Skipworth">
+    <meta name="description" content="senior project">
+    <meta name="keywords" content="time capsule">
+    <!-- add more keywords -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tempus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="img/time-capsule.png">
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <a href="index.html" class="logo-link">
+                <img src="img/time-capsule.png" alt="Tempus Logo" class="logo">
+                <h1 class="site-title">Tempus</h1>
+            </a>
+        </div>
+
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+	<div class="login-container">
+	
+	<h1>Sign Up</h1>
+
+		<form id="signupForm">
+			<label for="email">Email</label>
+			<input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+			<label for="user">Username</label>
+			<input type="text" id="user" name="userName" placeholder="Choose a username" required>
+
+			<label for="password">Password</label>
+			<input type="password" id="password" name="password" placeholder="Enter a password" required>
+
+			<label for="passwordRepeat">Repeat Password</label>
+			<input type="password" id="passwordRepeat" name="password-repeat" placeholder="Repeat your password" required>
+
+			<input type="submit" value="Create Account">
+	</form>
+
+	<p>Already have an account? <a href="login.html">Login here</a></p>
+</div>
+
+	<footer class="footer">
+  		<p>2025 Tyler Skipworth</p>
+  	</footer>
+
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="signup.js"></script>
+
+  </body>
+  </html>
