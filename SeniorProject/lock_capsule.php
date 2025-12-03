@@ -2,7 +2,7 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'db.php'; // your database connection
+require_once 'db.php';
 
 session_start();
 
@@ -14,7 +14,7 @@ $user_id = $_SESSION['user_id'];
 $capsule_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($capsule_id <= 0) die("Invalid capsule ID.");
 
-// Fetch capsule — only allow if draft and owned by user
+//get capsule — only allow if draft and owned by user
 $stmt = $conn->prepare("
     SELECT * FROM Capsule
     WHERE capsule_id = ? AND state = 'draft' 
@@ -27,21 +27,21 @@ $capsule = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$capsule) die("Capsule not found or not editable.");
 
-// Handle form submission
+//form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $release_date = $_POST['release_date'] ?? '';
     if (!$release_date) {
         $error = "Please select a release date.";
     } else {
-        // Convert HTML5 datetime-local to MySQL DATETIME
+        //convert HTML5 datetime-local to MySQL DATETIME
         $releaseObj = DateTime::createFromFormat('Y-m-d\TH:i', $release_date);
         if ($releaseObj === false) {
             $error = "Invalid release date format.";
         } else {
-            // Format properly for MySQL
+            //format properly for MySQL
             $normalized = $releaseObj->format("Y-m-d H:i:s");
 
-            // Update capsule with normalized release date and lock it
+            //update capsule with normalized release date and lock capsule
             $stmt = $conn->prepare("
                 UPDATE Capsule 
                 SET release_date = ?, state = 'locked'
