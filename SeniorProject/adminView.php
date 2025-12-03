@@ -1,13 +1,20 @@
 <?php
 session_start();
-$_SESSION['user_id'] = 5;
-$_SESSION['role'] = 'admin';
 require __DIR__ . '/db.php';
+
+//ensure user is logged in and is admin
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: login.html');
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['role'];
 
 if (!isset($_GET['capsule_id'])) die("No capsule ID provided.");
 $capsule_id = intval($_GET['capsule_id']);
 
-// Fetch capsule info
+//get capsule info
 $stmt = $conn->prepare("
     SELECT c.*, GROUP_CONCAT(u.username SEPARATOR ', ') AS contributors
     FROM Capsule c
@@ -23,7 +30,7 @@ if (!$capsule) {
     die("Capsule not found.");
 }
 
-// Fetch media list
+//get media list
 $stmt = $conn->prepare("
     SELECT m.*, u.username, mt.name AS media_type
     FROM Media m
@@ -45,7 +52,6 @@ $media_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body>
-<!-- ======= Navbar ======= -->
 <header class="header">
     <div class="logo-container">
         <a href="adminDash.php" class="logo-link">
@@ -75,38 +81,79 @@ $media_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <h2>Media Files</h2>
 
-        <?php if (count($media_list) > 0): ?>
-            <div class="file-grid">
-                <?php foreach ($media_list as $m): ?>
-                    <div class="file-card">
-                        <p><strong><?= htmlspecialchars($m['filename']); ?></strong></p>
-                        <p><strong>Type:</strong> <?= htmlspecialchars($m['media_type']); ?></p>
-                        <p><strong>Uploader:</strong> <?= htmlspecialchars($m['username']); ?></p>
-
-                        <?php
-                            $fp = htmlspecialchars($m['file_path']);
-                            switch ($m['media_type']) {
-                                case 'image': echo "<img class='file-preview' src='$fp' alt='Image preview'>"; break;
-                                case 'video': echo "<video class='file-preview' controls src='$fp'></video>"; break;
-                                case 'audio': echo "<audio class='file-preview' controls src='$fp'></audio>"; break;
-                                case 'document': echo "<a class='file-link' href='$fp' target='_blank'>View / Download</a>"; break;
-                                default: echo "<a class='file-link' href='$fp' target='_blank'>View File</a>";
-                            }
-                        ?>
-
-                        <form method="POST" action="adminAction.php">
-                            <input type="hidden" name="media_id" value="<?= $m['media_id']; ?>">
-                            <input type="hidden" name="capsule_id" value="<?= $capsule['capsule_id']; ?>">
-                            <button type="submit" name="action" value="delete_media" class="cancel-btn">Delete Media</button>
-                        </form>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
+        <?php if (empty($media_list)): ?>
             <p>No media uploaded yet.</p>
+        <?php else: ?>
+            <?php 
+                //group media by type
+                $grouped = [];
+                foreach ($media_list as $file) {
+                    $grouped[$file['media_type']][] = $file;
+                }
+            ?>
+
+            <?php foreach ($grouped as $type => $files): ?>
+                <h3><?= ucfirst($type) ?> Files</h3>
+
+                <div class="file-grid">
+                    <?php foreach ($files as $file): ?>
+                        <div class="file-card">
+                            <?php 
+                                $url = htmlspecialchars($file['file_path']);
+                                $filename = htmlspecialchars($file['filename']);
+
+                                //detect document types
+                                $doc_types = ['pdf', 'doc', 'docx', 'txt'];
+                                $file_ext = strtolower(pathinfo($file['filename'], PATHINFO_EXTENSION));
+                                $is_doc = in_array($file_ext, $doc_types);
+                            ?>
+
+                            <?php if ($type === 'image'): ?>
+                                <img src="<?= $url ?>" class="file-preview" alt="Image preview">
+
+                            <?php elseif ($type === 'video'): ?>
+                                <video class="file-preview" controls>
+                                    <source src="<?= $url ?>" type="video/mp4">
+                                </video>
+
+                            <?php elseif ($type === 'audio'): ?>
+                                <div class="audio-preview">
+                                    <audio controls preload="metadata">
+                                        <source src="<?= $url ?>" type="audio/mpeg">
+                                    </audio>
+                                    <p class="filename"><?= $filename ?></p>
+                                </div>
+
+                            <?php elseif ($is_doc): ?>
+                                <div class="doc-preview">
+                                    <a class="file-link" href="<?= $url ?>" target="_blank"><?= $filename ?></a>
+                                </div>
+
+                            <?php else: ?>
+                                <a class="file-link" href="<?= $url ?>" target="_blank"><?= $filename ?></a>
+                            <?php endif; ?>
+
+                            <p class="uploader-tag">Uploaded by: <?= htmlspecialchars($file['username']) ?></p>
+
+                            <?php if (!empty($file['description'])): ?>
+                                <p class="file-desc"><?= htmlspecialchars($file['description']) ?></p>
+                            <?php endif; ?>
+
+                            <!--admin only delete action -->
+                            <form method="POST" action="adminAction.php">
+                                <input type="hidden" name="media_id" value="<?= $file['media_id']; ?>">
+                                <input type="hidden" name="capsule_id" value="<?= $capsule['capsule_id']; ?>">
+                                <button type="submit" name="action" value="delete_media" class="cancel-btn">Delete Media</button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endforeach; ?>
         <?php endif; ?>
 
-        <a href="adminDash.php" class="submit-btn">← Back to Dashboard</a>
+        <div class="back-btn-container">
+            <a href="adminDash.php" class="back-btn">Back to Dashboard</a>
+        </div>
     </section>
 </main>
 
