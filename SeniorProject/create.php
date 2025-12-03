@@ -1,14 +1,14 @@
 <?php
 session_start();
 
-// If the user is NOT logged in, redirect to login
+//if the user is NOT logged in, redirect to login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.html");
     exit;
 }
 
-$user_id = $_SESSION['user_id'];   // Logged-in user's MySQL ID
-$username = $_SESSION['username']; // Optional, if you want to display it
+$user_id = $_SESSION['user_id'];
+$username = $_SESSION['username'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,8 +58,8 @@ $username = $_SESSION['username']; // Optional, if you want to display it
                 name="uploadedFiles[]" 
                 multiple 
                 required
-                accept="image/jpeg,image/png,video/mp4,video/quicktime,video/x-msvideo,audio/mpeg,audio/wav,audio/mp4,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
-            >
+                accept=".jpg,.jpeg,.png,.mp4,.mov,.avi,.mp3,.wav,.aac,.pdf,.docx,.txt"
+            />
 
             <div id="fileList"></div>
 
