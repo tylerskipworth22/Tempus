@@ -2,7 +2,6 @@ CREATE TABLE Users (
 	user_id INT AUTO_INCREMENT PRIMARY KEY,
 	username VARCHAR(50) NOT NULL UNIQUE,
 	email VARCHAR(100) NOT NULL UNIQUE,
-	password_hash VARCHAR(255) NOT NULL,
 	role ENUM('user', 'moderator', 'admin') NOT NULL default 'user'
 );
 
@@ -13,7 +12,8 @@ CREATE TABLE Capsule (
     state ENUM('draft','locked','released') DEFAULT 'draft',
     status ENUM('pending','approved','rejected') DEFAULT 'pending',
     release_date DATETIME,
-    isReviewed BOOLEAN DEFAULT FALSE
+    isReviewed BOOLEAN DEFAULT FALSE,
+    rejection_reason TEXT DEFAULT NULL
 );
 
 CREATE TABLE User_Capsules (
