@@ -1,4 +1,3 @@
-// login.js
 import { auth, signInWithEmailAndPassword } from "./firebase.js";
 
 document.addEventListener("DOMContentLoaded", () => {
