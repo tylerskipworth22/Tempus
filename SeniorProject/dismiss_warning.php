@@ -16,7 +16,7 @@ if (!isset($_POST['id'])) {
 
 $warning_id = intval($_POST['id']);
 
-// Delete the warning for this user only
+//delete the warning for this user only
 $stmt = $conn->prepare("DELETE FROM ModerationWarnings WHERE warning_id = ? AND user_id = ?");
 $success = $stmt->execute([$warning_id, $_SESSION['user_id']]);
 
