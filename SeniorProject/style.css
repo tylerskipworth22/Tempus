@@ -130,7 +130,7 @@ header h1, footer p {
 
 .mySlide img {
     width: 100%;
-    height-max: 650px;
+    max-height: 650px;
     border-radius: 6px;
 }
 
@@ -144,7 +144,7 @@ header h1, footer p {
     color: white;
     font-weight: bold;
     font-size: 18px;
-    transiton: 0.6s ease;
+    transition: 0.6s ease;
     border-radius: 0 3px 3px 0;
     user-select: none;
 }
@@ -489,9 +489,10 @@ header h1, footer p {
     gap: 12px;
 }
 
-.file-item {
+.item {
     display: flex;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 12px;
     padding: 10px;
     background-color: #fff;
@@ -500,9 +501,15 @@ header h1, footer p {
     flex-wrap: wrap;
 }
 
+.file-item input[type="text"] {
+    width: auto !important;
+    flex: 1 !important;
+    margin: 0;
+}
+
 .file-preview {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: auto;
     flex-shrink: 0;
     border-radius: 8px;
     overflow: hidden;
@@ -513,15 +520,28 @@ header h1, footer p {
     justify-content: center;
 }
 
-.file-preview img,
-.file-preview video {
+.file-preview img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
+}
+
+.file-preview video {
+    width: 100%;         /* full width */
+    height: auto;        /* keeps aspect ratio */
+    max-height: 200px; /* optional limit */
+    object-fit: contain; /* ensures controls stay visible */
+    display: block;      /* ensures proper block layout */
 }
 
 .file-preview audio {
     width: 100%;
+}
+
+.file-preview-video {
+    max-width: 120px;
+    max-height: 80px;
+    display: block;
 }
 
 .file-item p {
@@ -529,14 +549,6 @@ header h1, footer p {
     margin: 0;
     font-size: 0.95rem;
     color: #333;
-}
-
-.file-item input[type="text"] {
-    flex: 2;
-    padding: 6px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 0.9rem;
 }
 
 .file-item button {
@@ -552,6 +564,12 @@ header h1, footer p {
 
 .file-item button:hover {
     background-color: #c0392b;
+}
+
+.file-preview.video-preview {
+    width: 100%;
+    height: auto;       /* lets video scale naturally */
+    max-height: 250px;  /* prevent it from being huge */
 }
 
 /* ---------- EDIT Capsule PAGE ---------- */
@@ -620,23 +638,14 @@ header h1, footer p {
 
 .file-item {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     gap: 12px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 10px;
     justify-content: flex-start;
-}
-
-.small-preview {
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
-    object-fit: cover;
-    border: 1px solid #ccc;
-    background-color: #fafafa;
-    flex-shrink: 0;
 }
 
 .file-item p {
@@ -720,7 +729,11 @@ header h1, footer p {
 .file-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    justify-items: center;
+    justify-content: center;
     gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
     margin-top: 15px;
 }
 
@@ -751,6 +764,32 @@ header h1, footer p {
     word-wrap: break-word;
 }
 
+.file-link,
+.filename,
+.file-desc {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+.file-link {
+    display: block;
+    padding: 8px;
+    margin-bottom: 10px;
+    background: #f4f4f4;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+    overflow-wrap: break-word;
+}
+
+.file-tile {
+    max-width: 300px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
 /* ========== AUDIO FILES ========== */
 .audio-preview {
     display: flex;
@@ -765,6 +804,15 @@ header h1, footer p {
     max-width: 250px;
     outline: none;
     border-radius: 6px;
+}
+
+.file-card .file-preview.pdf-preview {
+    border: none;
+    background: none;
+    border-radius: 0;
+    padding: 0;
+    max-height: none;
+    display: block;  /* optional, ensures full width */
 }
 
 .audio-preview .filename {
@@ -856,12 +904,12 @@ header h1, footer p {
     background-color: #3a6fd2;  /* hover effect */
 }
 
-.file-card img.file-preview,
 .file-card video.file-preview {
     max-width: 100%;
-    max-height: 180px;
+    max-height: 250px;  /* slightly taller so controls fit */
     border-radius: 8px;
     margin-bottom: 10px;
+    object-fit: contain; /* keeps video visible, no cropping */
 }
 
 .file-card audio.file-preview {
@@ -1164,6 +1212,13 @@ edit-user-card {
     text-align: center;
 }
 
+.file-card.document-card {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
 .file-preview {
     max-width: 100%;
     max-height: 250px;
@@ -1369,12 +1424,308 @@ edit-user-card {
     margin: 4px 0 8px;
 }
 
+.back-btn {
+    display: inline-block;
+    width: auto !important;
+    padding: 10px 18px;
+    background-color: #4B8DF8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: none;
+}
 
-@media (max-width: 700px) {
+.back-btn:hover {
+    background-color: #3a6fd2;
+}
 
-    /*index*/
+.file-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.file-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 250px;
+    border-radius: 8px;
+    background-color: #fefefe;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    word-wrap: break-word;
+}
+
+.create-container .file-card {
+    width: 100%;       /* let it expand */
+    max-width: 700px;  /* match container */
+}
+
+.file-preview {
+    max-width: 100%;
+    max-height: 150px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+}
+
+.audio-preview audio {
+    width: 100%;
+}
+
+.doc-preview {
+    border: 1px solid #ccc;
+    padding: 10px;
+    max-width: 100%;
+    word-wrap: break-word;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.doc-preview .file-link {
+    display: block;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.uploader-tag {
+    font-size: 0.85em;
+    color: #555;
+    margin-top: 4px;
+}
+
+.file-desc {
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+
+.cancel-btn {
+    margin-top: 8px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #e74c3c;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancel-btn:hover {
+    background-color: #c0392b;
+}
+
+.back-btn-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.back-btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+    background-color: #2980b9;
+}
+
+/* Center mod action buttons */
+.mod-action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* space between buttons */
+    margin-bottom: 20px;
+}
+
+/* Center the warning textarea and button */
+.warning-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Make textarea same width as buttons */
+.warning-container .create-form {
+    width: 250px; /* same width as back button */
+    max-width: 90%;
+    padding: 8px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Make action buttons same width as back button */
+.mod-action-buttons .submit-btn,
+.mod-action-buttons .cancel-btn,
+.warning-container .cancel-btn,
+.back-btn {
+    width: 250px;
+    max-width: 90%;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+
+    /* Header */
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.5rem 1rem;
+    }
+    .logo-container {
+        margin-bottom: 0.5rem;
+    }
+    .navbar .nav-links {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    /* Text scaling */
+    h1 {
+        font-size: 1.5rem;
+    }
+    h2 {
+        font-size: 1.2rem;
+    }
+    p {
+        font-size: 0.85rem;
+        padding: 0 10px;
+    }
+
+    /* Slideshow adjustments */
+    .prev, .next {
+        font-size: 16px;
+        padding: 12px;
+    }
+    .text {
+        font-size: 13px;
+    }
+    .number-text {
+        font-size: 18px;
+    }
+
+    /* Feature cards */
     .features-list {
         flex-direction: column;
+        gap: 1rem;
+        padding: 0 10px;
+    }
+    .feature {
+        max-width: 100%;
+        width: 90%;
+    }
+
+    /* Forms */
+    .create-form, .create-container, .login-container, .invite-container, .edit-user-card, .admin-section {
+        width: 95%;
+        padding: 15px;
+    }
+
+    /* File previews and grids */
+    .file-grid {
+        display: flex;
+        flex-direction: column;
         align-items: center;
+    }
+    .file-card {
+        width: 90%;
+        max-width: 350px;
+    }
+    .file-preview, .audio-preview audio, .doc-preview {
+        max-width: 100%;
+    }
+
+    /* Capsule content */
+    .capsule-info, .capsule-desc {
+        padding: 10px;
+    }
+
+    /* Buttons */
+    .submit-btn, .cancel-btn, .back-btn, .mod-action-buttons .submit-btn, .mod-action-buttons .cancel-btn, .warning-container .cancel-btn {
+        width: 100%;
+        font-size: 0.95rem;
+    }
+
+    /* Modal */
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    /* Admin tables */
+    .admin-table th, .admin-table td {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    /* Capsule view */
+    .capsule-view {
+        padding: 10px;
+    }
+
+    /* Textarea full width */
+    textarea, input[type="text"], input[type="date"], input[type="email"], input[type="password"], input[type="file"], select {
+        width: 100%;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .site-title {
+        font-size: 1.4rem;
+    }
+    .header {
+        padding: 0.5rem;
+    }
+    .logo {
+        height: 45px;
+    }
+    h1 {
+        font-size: 1.3rem;
+    }
+    h2 {
+        font-size: 1.1rem;
+    }
+    p {
+        font-size: 0.8rem;
+    }
+    .features-list, .file-grid {
+        gap: 0.8rem;
     }
 }
