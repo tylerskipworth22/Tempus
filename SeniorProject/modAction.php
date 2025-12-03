@@ -26,7 +26,7 @@ try {
             die("Warning message cannot be empty.");
         }
         $message = trim($_POST['message']);
-        // Send warning to all owners of the capsule
+        //send warning to all owners of the capsule
         $ownersStmt = $conn->prepare("SELECT user_id FROM User_Capsules WHERE capsule_id=? AND role='owner'");
         $ownersStmt->execute([$capsule_id]);
         $owner_ids = $ownersStmt->fetchAll(PDO::FETCH_COLUMN);
@@ -39,7 +39,7 @@ try {
         die("Unknown action.");
     }
 
-    // Redirect back to moderator view for the capsule
+    //redirect back to moderator view for the capsule
     header("Location: modView.php?capsule_id=$capsule_id");
     exit;
 
