@@ -20,7 +20,7 @@ if (!$invite) die("Invite not found.");
 if ($invite['status'] !== 'pending') die("This invite is no longer active.");
 
 
-// Check if logged-in user's email matches invite email
+//check if logged-in user's email matches invite email
 $userStmt = $conn->prepare("SELECT email FROM Users WHERE user_id = ?");
 $userStmt->execute([$user_id]);
 $userEmail = $userStmt->fetchColumn();
@@ -30,14 +30,14 @@ if ($userEmail !== $invite['invitee_email']) {
 }
 
 
-// Add contributor permission
+//add contributor permission
 $insert = $conn->prepare("
     INSERT INTO User_Capsules (user_id, capsule_id, role)
     VALUES (?, ?, 'contributor')
 ");
 $insert->execute([$user_id, $invite['capsule_id']]);
 
-// Mark invite as accepted
+//mark invite as accepted
 $update = $conn->prepare("UPDATE Capsule_Invites SET status = 'accepted' WHERE invite_id = ?");
 $update->execute([$invite_id]);
 
