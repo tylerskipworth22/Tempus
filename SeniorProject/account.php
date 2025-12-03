@@ -2,9 +2,7 @@
 session_start();
 require __DIR__ . '/db.php';
 
-// ----------------------------------------------
-// 1. Check Firebase Authentication
-// ----------------------------------------------
+//check firebase authentication
 if (!isset($_SESSION['uid'])) {
     header('Location: login.html');
     exit;
@@ -13,9 +11,7 @@ if (!isset($_SESSION['uid'])) {
 $firebaseUid = $_SESSION['uid'];
 
 try {
-    // ----------------------------------------------
-    // 2. Look up the user in MySQL
-    // ----------------------------------------------
+    //look up user in MySQL
     $stmt = $conn->prepare("
         SELECT user_id, username, email, role 
         FROM Users 
@@ -29,14 +25,12 @@ try {
         die("User not found in database. Please contact admin.");
     }
 
-    // Maintain session values
+    //maintain session values
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['username'] = $user['username'];
     $_SESSION['role'] = $user['role'];
 
-    // ----------------------------------------------
-    // 3. Redirect Admin/Moderator
-    // ----------------------------------------------
+    //redirect Admin/Moderator dash
     switch ($user['role']) {
         case 'admin':
             header('Location: adminDash.php');
@@ -47,16 +41,14 @@ try {
             exit;
 
         default:
-            // Continue to account page for normal users
+            //continue to account page for normal users
             break;
     }
 
-    // ----------------------------------------------
-    // 4. USER ACCOUNT LOGIC BELOW
-    // ----------------------------------------------
+    //user account logic
     $user_id = $user['user_id'];
 
-    // Auto-unlock expired capsules
+    //auto-unlock expired capsules
     $unlock = $conn->prepare("
         UPDATE Capsule
         SET state = 'released'
@@ -68,9 +60,7 @@ try {
     ");
     $unlock->execute(['uid' => $user_id]);
 
-    // ----------------------------------------------
-    // 5. Fetch capsules the user owns
-    // ----------------------------------------------
+    //get capsules user owns
     $ownedQuery = $conn->prepare("
         SELECT c.capsule_id, c.title, c.description, c.release_date, 
                c.state, c.status
@@ -82,9 +72,7 @@ try {
     $ownedQuery->execute(['uid' => $user_id]);
     $ownedCapsules = $ownedQuery->fetchAll(PDO::FETCH_ASSOC);
 
-    // ----------------------------------------------
-    // 6. Fetch capsules the user contributes to
-    // ----------------------------------------------
+    //get capsules user contributes to
     $sharedQuery = $conn->prepare("
         SELECT c.capsule_id, c.title, c.description, c.release_date, 
                c.state, c.status,
@@ -99,17 +87,27 @@ try {
     $sharedQuery->execute(['uid' => $user_id]);
     $sharedCapsules = $sharedQuery->fetchAll(PDO::FETCH_ASSOC);
 
-    // ----------------------------------------------
-    // 7. Merge owner + contributor capsules
-    // ----------------------------------------------
-    $capsules = array_merge(
-        array_map(fn($c) => $c + ['role' => 'owner'], $ownedCapsules),
-        array_map(fn($c) => $c + ['role' => 'contributor'], $sharedCapsules)
-    );
+//merge owner + contributor capsules
+$capsules = array_merge(
+    array_map(fn($c) => $c + ['role' => 'owner'], $ownedCapsules),
+    array_map(fn($c) => $c + ['role' => 'contributor'], $sharedCapsules)
+);
 
-    // ----------------------------------------------
-    // 8. Fetch moderation warnings
-    // ----------------------------------------------
+//deduplicate by capsule_id: owner role takes precedence
+$uniqueCapsules = [];
+foreach ($capsules as $c) {
+    $id = $c['capsule_id'];
+    if (!isset($uniqueCapsules[$id]) || $uniqueCapsules[$id]['role'] !== 'owner') {
+        $uniqueCapsules[$id] = $c;
+    }
+}
+
+//remove rejected capsules from main list
+$capsules = array_filter($uniqueCapsules, fn($c) => ($c['status'] ?? 'pending') !== 'rejected');
+
+//active/pending capsules should only display
+
+    //get moderation warnings
     $warnStmt = $conn->prepare("
         SELECT w.warning_id, w.message, w.capsule_id, w.date_sent, c.title
         FROM ModerationWarnings w
@@ -120,9 +118,19 @@ try {
     $warnStmt->execute(['uid' => $user_id]);
     $warnings = $warnStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // ----------------------------------------------
-    // 9. Load the account template
-    // ----------------------------------------------
+//get rejected capsules
+$rejectedStmt = $conn->prepare("
+    SELECT capsule_id, title, rejection_reason, release_date AS rejection_date
+    FROM Capsule
+    WHERE status = 'rejected' AND capsule_id IN (
+        SELECT capsule_id FROM User_Capsules WHERE user_id = :uid
+    )
+    ORDER BY release_date DESC
+");
+$rejectedStmt->execute(['uid' => $user_id]);
+$rejectedCapsules = $rejectedStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //load account template
     include __DIR__ . '/account_template.php';
 
 } catch (PDOException $e) {
