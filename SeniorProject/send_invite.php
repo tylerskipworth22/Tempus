@@ -15,7 +15,7 @@ if (!$capsule_id || !$invite_email) {
     die("Missing capsule or email.");
 }
 
-// Check if current user is owner
+//check if current user is owner
 $stmt = $conn->prepare("
     SELECT * FROM User_Capsules 
     WHERE user_id = :user_id AND capsule_id = :capsule_id AND role = 'owner'
@@ -25,7 +25,7 @@ if (!$stmt->fetch()) {
     die("You do not have permission to invite contributors for this capsule.");
 }
 
-// Check if invited user exists
+//check if invited user exists
 $stmt = $conn->prepare("SELECT user_id FROM Users WHERE email = :email");
 $stmt->execute(['email' => $invite_email]);
 $invitedUser = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -36,7 +36,7 @@ if (!$invitedUser) {
 
 $inviteUserId = $invitedUser['user_id'];
 
-// Check if already a contributor
+//check if already a contributor
 $stmt = $conn->prepare("
     SELECT * FROM User_Capsules 
     WHERE user_id = :inviteUserId AND capsule_id = :capsule_id
@@ -46,7 +46,7 @@ if ($stmt->fetch()) {
     die("User is already a contributor.");
 }
 
-// Add user as contributor
+//add user as contributor
 $stmt = $conn->prepare("
     INSERT INTO User_Capsules (user_id, capsule_id, role)
     VALUES (:inviteUserId, :capsule_id, 'contributor')
