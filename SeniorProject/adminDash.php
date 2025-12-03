@@ -1,9 +1,5 @@
 <?php
 session_start();
-/*
-    $_SESSION['user_id'] = 5;
-    $_SESSION['role'] = 'admin';
-*/
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     die("Access denied. Only admins can view this page.");
@@ -11,9 +7,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 require __DIR__ . '/db.php';
 
-/* ============================
-   FETCH ALL CAPSULES
-============================ */
+//get all capsules
 $stmt = $conn->prepare("
     SELECT c.capsule_id, c.title, c.state, c.release_date, c.status, GROUP_CONCAT(u.username) AS owners
     FROM Capsule c
@@ -25,23 +19,18 @@ $stmt = $conn->prepare("
 $stmt->execute();
 $capsules = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-/* ============================
-   FETCH MODERATORS
-============================ */
+//get moderators
 $stmt = $conn->prepare("SELECT user_id, username, email FROM Users WHERE role='moderator'");
 $stmt->execute();
 $moderators = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-/* ============================
-   FETCH ALL USERS (for admin role changing)
-============================ */
+//get all users
+
 $stmt = $conn->prepare("SELECT user_id, username, email, role FROM Users ORDER BY username ASC");
 $stmt->execute();
 $allUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-/* ============================
-   MODERATION QUEUE
-============================ */
+//mod queue
 $stmt = $conn->prepare("
     SELECT c.capsule_id, c.title, GROUP_CONCAT(u.username) AS owners, c.status, c.state, c.release_date
     FROM Capsule c
@@ -84,7 +73,6 @@ $pendingCapsules = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <h1>Welcome, <?= htmlspecialchars($username ?? $_SESSION['username']) ?></h1>
     <p>Manage capsules, moderators, users, and pending content here.</p>
 
-    <!-- ===== CAPSULES SECTION ===== -->
     <section class="admin-section">
         <h2>Capsules</h2>
         <?php if (count($capsules) > 0): ?>
@@ -115,7 +103,6 @@ $pendingCapsules = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
     </section>
 
-    <!-- ===== USER ROLE MANAGEMENT ===== -->
 <section class="admin-section">
     <h2>User Role Management</h2>
     <p>Edit usernames, emails, and roles for any user.</p>
@@ -146,7 +133,6 @@ $pendingCapsules = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </table>
 </section>
 
-    <!-- ===== MODERATION QUEUE ===== -->
     <section class="admin-section">
         <h2>Moderation Queue</h2>
 
