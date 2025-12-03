@@ -14,7 +14,7 @@ if (!$capsule_id) {
     die("Invalid capsule ID.");
 }
 
-// Check if current user is owner of this capsule
+//check if current user is owner of capsule
 $stmt = $conn->prepare("
     SELECT c.title 
     FROM Capsule c
