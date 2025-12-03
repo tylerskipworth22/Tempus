@@ -1,11 +1,12 @@
 <?php
 session_start();
-require __DIR__ . '/vendor/autoload.php';  // Composer autoload
-require __DIR__ . '/db.php';               // MySQL connection
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/db.php';
 
 use Kreait\Firebase\Factory;
 
 header("Content-Type: application/json");
+header("Access-Control-Allow-Credentials: true");
 
 $data = json_decode(file_get_contents("php://input"), true);
 $idToken = $data['idToken'] ?? '';
@@ -22,7 +23,7 @@ try {
     $verifiedToken = $auth->verifyIdToken($idToken);
     $firebaseUid = $verifiedToken->claims()->get('sub');
 
-    // Optional: fetch user from MySQL if needed
+    //get user
     $stmt = $conn->prepare("SELECT user_id, username, role FROM Users WHERE firebase_uid = :uid LIMIT 1");
     $stmt->execute(['uid' => $firebaseUid]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -32,6 +33,7 @@ try {
         exit;
     }
 
+    //set PHP session
     $_SESSION['uid'] = $firebaseUid;
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['username'] = $user['username'];
