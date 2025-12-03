@@ -24,7 +24,7 @@ try {
     $verifiedToken = $auth->verifyIdToken($idToken);
     $firebaseUid = $verifiedToken->claims()->get('sub');
 
-    // Insert user into MySQL
+    //insert user into MySQL
     $stmt = $conn->prepare("INSERT INTO Users (username, email, firebase_uid) VALUES (?, ?, ?)");
     $stmt->execute([$username, $email, $firebaseUid]);
 
