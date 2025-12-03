@@ -1,15 +1,21 @@
 <?php
 session_start();
-$_SESSION['user_id'] = 2;
-$_SESSION['role'] = 'moderator';
 require __DIR__ . '/db.php';
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'moderator') {
+    header('Location: login.html');
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['role'];
 
 if (!isset($_GET['capsule_id'])) die("No capsule ID provided.");
 $capsule_id = intval($_GET['capsule_id']);
 
-// Fetch capsule info
+//get capsule info
 $stmt = $conn->prepare("
-    SELECT c.*, GROUP_CONCAT(u.username) AS contributors
+    SELECT c.*, GROUP_CONCAT(u.username SEPARATOR ', ') AS contributors
     FROM Capsule c
     LEFT JOIN User_Capsules uc ON c.capsule_id = uc.capsule_id
     LEFT JOIN Users u ON uc.user_id = u.user_id
@@ -19,9 +25,13 @@ $stmt = $conn->prepare("
 $stmt->execute([$capsule_id]);
 $capsule = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Fetch media list
+if (!$capsule) {
+    die("Capsule not found.");
+}
+
+//get media list
 $stmt = $conn->prepare("
-    SELECT m.*, u.username, mt.name AS media_type
+    SELECT m.*, u.username AS uploader_name, mt.name AS media_type
     FROM Media m
     JOIN Users u ON m.uploader_id = u.user_id
     JOIN MediaType mt ON m.media_type_id = mt.media_type_id
@@ -39,8 +49,8 @@ $media_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <link rel="stylesheet" href="style.css">
 <link rel="icon" type="image/x-icon" href="img/time-capsule.png">
 </head>
-<body>
 
+<body>
 <header class="header">
     <div class="logo-container">
         <a href="modDash.php" class="logo-link">
@@ -56,57 +66,90 @@ $media_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </nav>
 </header>
 
-<div class="mod-view">
-    <div class="capsule-info">
+<main class="admin-view-container">
+    <section class="admin-view">
         <h1><?= htmlspecialchars($capsule['title']); ?></h1>
-        <p><strong>Description:</strong> <?= htmlspecialchars($capsule['description']); ?></p>
-        <p><strong>Status:</strong> <?= htmlspecialchars($capsule['status']); ?></p>
-        <p><strong>State:</strong> <?= htmlspecialchars($capsule['state']); ?></p>
-        <p><strong>Reviewed:</strong> <?= $capsule['isReviewed'] ? 'Yes' : 'No'; ?></p>
-        <p><strong>Contributors:</strong> <?= htmlspecialchars($capsule['contributors']); ?></p>
-        <p><strong>Release Date:</strong> <?= htmlspecialchars($capsule['release_date']); ?></p>
-    </div>
 
-    <div class="capsule-content">
+        <div class="capsule-details">
+            <p><strong>Description:</strong> <?= htmlspecialchars($capsule['description']); ?></p>
+            <p><strong>Status:</strong> <?= htmlspecialchars($capsule['status']); ?></p>
+            <p><strong>State:</strong> <?= htmlspecialchars($capsule['state']); ?></p>
+            <p><strong>Reviewed:</strong> <?= $capsule['isReviewed'] ? 'Yes' : 'No'; ?></p>
+            <p><strong>Contributors:</strong> <?= htmlspecialchars($capsule['contributors']); ?></p>
+            <p><strong>Release Date:</strong> <?= htmlspecialchars($capsule['release_date']); ?></p>
+        </div>
+
         <h2>Media Files</h2>
-        <?php if(count($media_list) > 0): ?>
-            <div class="file-grid">
-                <?php foreach($media_list as $m): ?>
-                    <div class="file-card">
-                        <p><strong><?= htmlspecialchars($m['filename']); ?></strong></p>
-                        <p><strong>Type:</strong> <?= htmlspecialchars($m['media_type']); ?></p>
-                        <p><strong>Uploader:</strong> <?= htmlspecialchars($m['username']); ?></p>
-                        <?php
-                            $fp = htmlspecialchars($m['file_path']);
-                            switch($m['media_type']){
-                                case 'image': echo "<img class='file-preview' src='$fp'>"; break;
-                                case 'video': echo "<video class='file-preview' controls src='$fp'></video>"; break;
-                                case 'audio': echo "<audio class='file-preview' controls src='$fp'></audio>"; break;
-                                case 'document': echo "<a class='file-link' href='$fp' target='_blank'>View/Download</a>"; break;
-                                default: echo "<a class='file-link' href='$fp'>View File</a>";
-                            }
-                        ?>
-                        <p class="file-desc"><?= htmlspecialchars($m['description']); ?></p>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+
+        <?php if (empty($media_list)): ?>
+            <p>No media uploaded yet.</p>
         <?php else: ?>
-            <p class="capsule-status">No media uploaded yet.</p>
+
+            <?php
+            // Group media by type
+            $grouped = [];
+            foreach ($media_list as $file) {
+                $grouped[$file['media_type']][] = $file;
+            }
+            ?>
+
+            <?php foreach ($grouped as $type => $files): ?>
+                <h3><?= ucfirst($type) ?> Files</h3>
+
+                <div class="file-grid">
+                    <?php foreach ($files as $file): ?>
+                        <div class="file-card">
+
+                            <?php 
+                                $url = htmlspecialchars($file['file_path']);
+                                $filename = htmlspecialchars($file['filename']);
+                                $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                                $is_doc = in_array($ext, ['pdf', 'txt', 'doc', 'docx']);
+                            ?>
+
+                            <?php if ($type === 'image'): ?>
+                                <img src="<?= $url ?>" class="file-preview" alt="Image">
+
+                            <?php elseif ($type === 'video'): ?>
+                                <video class="file-preview" controls>
+                                    <source src="<?= $url ?>" type="video/mp4">
+                                </video>
+
+                            <?php elseif ($type === 'audio'): ?>
+                                <audio controls preload="metadata" class="audio-preview">
+                                    <source src="<?= $url ?>" type="audio/mpeg">
+                                </audio>
+                                <p class="filename"><?= $filename ?></p>
+
+                            <?php elseif ($is_doc): ?>
+                                <a href="<?= $url ?>" target="_blank" class="file-link"><?= $filename ?></a>
+
+                            <?php else: ?>
+                                <a href="<?= $url ?>" target="_blank" class="file-link"><?= $filename ?></a>
+
+                            <?php endif; ?>
+
+                            <p class="uploader-tag">
+                                Uploaded by: <?= htmlspecialchars($file['uploader_name']) ?>
+                            </p>
+
+                            <?php if (!empty($file['description'])): ?>
+                                <p class="file-desc"><?= htmlspecialchars($file['description']) ?></p>
+                            <?php endif; ?>
+
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+            <?php endforeach; ?>
         <?php endif; ?>
 
-        <!-- Capsule-level actions -->
-        <form method="POST" action="modAction.php" class="capsule-actions">
-            <input type="hidden" name="capsule_id" value="<?= $capsule['capsule_id']; ?>">
-            <button type="submit" name="action" value="approve" class="submit-btn">Approve Capsule</button>
-            <button type="submit" name="action" value="reject" class="cancel-btn">Reject Capsule</button>
-            <br><br>
-            <textarea name="message" placeholder="Enter warning for owner(s)" class="create-form"></textarea>
-            <button type="submit" name="action" value="warn" class="cancel-btn">Send Warning</button>
-        </form>
+        <div class="back-btn-container">
+            <a href="modDash.php" class="back-btn">← Back to Dashboard</a>
+        </div>
 
-        <a class="submit-btn back-btn" href="modDash.php">← Back to Dashboard</a>
-    </div>
-</div>
+    </section>
+</main>
 
 </body>
 </html>
