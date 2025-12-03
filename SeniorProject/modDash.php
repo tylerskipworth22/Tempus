@@ -1,39 +1,70 @@
 <?php
 date_default_timezone_set('America/Chicago');
 session_start();
-$_SESSION['user_id'] = 2;
-$_SESSION['role'] = 'moderator';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'moderator') {
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'moderator') {
     die("Access denied. Only moderators can view this page.");
 }
 
 require __DIR__ . '/db.php';
 
-// Handle capsule-level actions
+//handle capsule level actions
 if (isset($_POST['action'], $_POST['capsule_id'])) {
     $capsule_id = intval($_POST['capsule_id']);
 
     if ($_POST['action'] === 'approve') {
-        $conn->prepare("UPDATE Capsule SET status='approved', isReviewed=1 WHERE capsule_id=?")
-             ->execute([$capsule_id]);
+        //approve capsule
+        $stmt = $conn->prepare("UPDATE Capsule SET status='approved', isReviewed=1, rejection_reason=NULL WHERE capsule_id=?");
+        $stmt->execute([$capsule_id]);
+
     } elseif ($_POST['action'] === 'reject') {
-        $conn->prepare("UPDATE Capsule SET status='rejected', isReviewed=1 WHERE capsule_id=?")
-             ->execute([$capsule_id]);
-    } elseif ($_POST['action'] === 'warn' && !empty($_POST['message'])) {
-        $message = $_POST['message'];
-        $owners = $conn->prepare("SELECT user_id FROM User_Capsules WHERE capsule_id=? AND role='owner'");
-        $owners->execute([$capsule_id]);
-        foreach ($owners->fetchAll(PDO::FETCH_COLUMN) as $user_id) {
-            $conn->prepare("INSERT INTO ModerationWarnings (capsule_id, moderator_id, user_id, message) VALUES (?, ?, ?, ?)")
-                 ->execute([$capsule_id, $_SESSION['user_id'], $user_id, $message]);
+        //reject capsule
+        if (!empty($_POST['reason'])) {
+            $reason = trim($_POST['reason']);
+
+            //update capsule status & store rejection reason
+            $stmt = $conn->prepare("UPDATE Capsule SET status='rejected', isReviewed=1, rejection_reason=? WHERE capsule_id=?");
+            $stmt->execute([$reason, $capsule_id]);
+
+        } else {
+            $error = "Please provide a reason for rejection.";
+        }
+
+    } elseif ($_POST['action'] === 'warn') {
+        //send warning to capsule owner
+        if (!empty($_POST['message'])) {
+            $message = trim($_POST['message']);
+
+            //get capsule owner
+            $ownerStmt = $conn->prepare("
+                SELECT user_id 
+                FROM User_Capsules 
+                WHERE capsule_id = :capsule_id AND role = 'owner' 
+                LIMIT 1
+            ");
+            $ownerStmt->execute(['capsule_id' => $capsule_id]);
+            $owner = $ownerStmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($owner) {
+                //insert warning
+                $insertWarn = $conn->prepare("
+                    INSERT INTO ModerationWarnings (capsule_id, moderator_id, user_id, message)
+                    VALUES (:capsule_id, :moderator_id, :user_id, :message)
+                ");
+                $insertWarn->execute([
+                    'capsule_id'    => $capsule_id,
+                    'moderator_id'  => $_SESSION['user_id'],
+                    'user_id'       => $owner['user_id'],
+                    'message'       => $message
+                ]);
+            }
         }
     }
 }
 
-// Fetch capsules pending review
+//get capsules pending review
 $stmt = $conn->prepare("
-    SELECT c.capsule_id, c.title, c.state, c.release_date, c.isReviewed, c.status, GROUP_CONCAT(u.username) AS owners
+    SELECT c.capsule_id, c.title, c.state, c.release_date, c.isReviewed, c.status, c.rejection_reason, GROUP_CONCAT(u.username) AS owners
     FROM Capsule c
     LEFT JOIN User_Capsules uc ON c.capsule_id = uc.capsule_id AND uc.role='owner'
     LEFT JOIN Users u ON uc.user_id = u.user_id
@@ -70,8 +101,12 @@ $capsules = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </header>
 
 <main class="account-container">
-    <h1>Welcome, <?= htmlspecialchars($username ?? $_SESSION['username']) ?></h1>
+    <h1>Welcome, <?= htmlspecialchars($_SESSION['username']) ?></h1>
     <p>Review pending capsules and send warnings to users.</p>
+
+    <?php if(!empty($error)): ?>
+        <p style="color:red; font-weight:bold;"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
 
     <?php if(count($capsules) > 0): ?>
         <div class="file-grid">
@@ -87,19 +122,23 @@ $capsules = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="moderation-buttons">
                         <a class="submit-btn" href="modView.php?capsule_id=<?= $cap['capsule_id']; ?>">View Capsule</a>
 
+                        <!--approve form -->
                         <form method="POST" style="display:inline-block;">
                             <input type="hidden" name="capsule_id" value="<?= $cap['capsule_id']; ?>">
                             <input type="hidden" name="action" value="approve">
                             <input type="submit" class="submit-btn" value="Approve Capsule">
                         </form>
 
+                        <!--reject form -->
                         <form method="POST" style="display:inline-block;">
                             <input type="hidden" name="capsule_id" value="<?= $cap['capsule_id']; ?>">
                             <input type="hidden" name="action" value="reject">
+                            <input type="text" name="reason" placeholder="Reason for rejection" style="padding:5px; width:180px;">
                             <input type="submit" class="cancel-btn" value="Reject Capsule">
                         </form>
                     </div>
 
+                    <!--send warning -->
                     <form method="POST" style="margin-top:8px;">
                         <input type="hidden" name="capsule_id" value="<?= $cap['capsule_id']; ?>">
                         <input type="hidden" name="action" value="warn">
