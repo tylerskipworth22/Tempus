@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!form) return;
 
     form.addEventListener("submit", async (e) => {
-        e.preventDefault(); // Stop normal form submission
+        e.preventDefault();
 
         const email = document.getElementById("email").value.trim();
         const username = document.getElementById("user").value.trim();
@@ -19,12 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            // Create Firebase Auth user
+            //create Firebase Auth user
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             const idToken = await user.getIdToken();
 
-            // Send token + username/email to PHP to insert into MySQL
+            //send token + username/email to PHP to insert into MySQL
             const response = await fetch("signup.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
