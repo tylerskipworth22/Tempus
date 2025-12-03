@@ -1,8 +1,8 @@
 <?php
 require_once 'db.php';
+require_once 'auth_check.php';
 session_start();
 
-// Temporary admin check
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     die("Access denied. Only admins can edit users.");
 }
@@ -17,11 +17,10 @@ if (!$user) die("User not found.");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
-    $email = $_POST['email'];
     $role = $_POST['role'];
 
-    $update = $conn->prepare("UPDATE Users SET username=:u, email=:e, role=:r WHERE user_id=:id");
-    $update->execute(['u'=>$username, 'e'=>$email, 'r'=>$role, 'id'=>$user_id]);
+    $update = $conn->prepare("UPDATE Users SET username=:u, role=:r WHERE user_id=:id");
+    $update->execute(['u'=>$username, 'r'=>$role, 'id'=>$user_id]);
 
     header("Location: adminDash.php");
     exit;
@@ -58,9 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="post" class="edit-user-form">
             <label for="username">Username</label>
             <input id="username" name="username" value="<?= htmlspecialchars($user['username']); ?>" required>
-
-            <label for="email">Email</label>
-            <input id="email" type="email" name="email" value="<?= htmlspecialchars($user['email']); ?>" required>
 
             <label for="role">Role</label>
             <select id="role" name="role">
