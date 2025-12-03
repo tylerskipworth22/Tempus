@@ -34,6 +34,7 @@
     <h1>Welcome, <?= htmlspecialchars($username ?? $_SESSION['username']) ?></h1>
     <p>Here are your time capsules:</p>
 
+<!--display warnings-->
 <?php if (!empty($warnings)): ?>
 <section class="warnings-box">
     <h2 style="color:#c0392b;">⚠️ Moderator Warnings</h2>
@@ -50,73 +51,92 @@
 </section>
 <?php endif; ?>
 
-    <?php if (empty($capsules)): ?>
-        <p>No capsules yet. <a href="create.php">Create one now</a>.</p>
-    <?php else: ?>
-        <?php foreach ($capsules as $capsule): ?>
-            <?php
-                $release_timestamp = !empty($capsule['release_date']) ? strtotime($capsule['release_date']) : null;
-                $state = $capsule['state'] ?? 'draft';
-                $capsuleRole = $capsule['role'] ?? 'owner';
+<br>
 
-                // Determine display status
-                if ($state === 'draft') {
-                    $status_text = "📝 Draft (editable)";
-                } elseif ($state === 'locked') {
-                    if ($release_timestamp && $release_timestamp > time()) {
-                        $status_text = "🔒 Locked until " . date("M j, Y \\a\\t g:i A", $release_timestamp);
-                    } else {
-                        // Time has passed — mark released
-                        $state = 'released';
-                        $status_text = "✅ Released";
-                    }
-                } elseif ($state === 'released') {
-                    $status_text = "✅ Released";
+<!--display rejected capsules-->
+<?php if (!empty($rejectedCapsules)): ?>
+<section class="rejected-box">
+    <h2 style="color:#e74c3c;">❌ Rejected Capsules</h2>
+    <?php foreach ($rejectedCapsules as $cap): ?>
+        <div class="warning-card rejected-capsule" id="rejected-<?= $cap['capsule_id'] ?>">
+            <p><strong>Capsule:</strong> <?= htmlspecialchars($cap['title']) ?></p>
+            <p><strong>Reason:</strong> <?= nl2br(htmlspecialchars($cap['rejection_reason'])) ?></p>
+            <p class="timestamp">
+                Rejected on <?= date("M j, Y \\a\\t g:i A", strtotime($cap['rejection_date'])) ?>
+            </p>
+            <button type="button" class="dismiss-btn" data-id="<?= $cap['capsule_id'] ?>">Dismiss</button>
+        </div>
+    <?php endforeach; ?>
+</section>
+<?php endif; ?>
+
+<br>
+
+<?php if (empty($capsules)): ?>
+    <p>No capsules yet. <a href="create.php">Create one now</a>.</p>
+<?php else: ?>
+    <?php foreach ($capsules as $capsule): ?>
+        <?php
+            $release_timestamp = !empty($capsule['release_date']) ? strtotime($capsule['release_date']) : null;
+            $state = $capsule['state'] ?? 'draft';
+            $capsuleRole = $capsule['role'] ?? 'owner';
+
+            //skip rejected capsules
+            if (($capsule['status'] ?? 'pending') === 'rejected') continue;
+
+            //determine display status
+            if ($state === 'draft') {
+                $status_text = "📝 Draft (editable)";
+            } elseif ($state === 'locked') {
+                if ($release_timestamp && $release_timestamp > time()) {
+                    $status_text = "🔒 Locked until " . date("M j, Y \\a\\t g:i A", $release_timestamp);
                 } else {
-                    $status_text = "🔒 Locked"; // fallback
+                    $state = 'released';
+                    $status_text = "✅ Released";
                 }
-            ?>
+            } elseif ($state === 'released') {
+                $status_text = "✅ Released";
+            } else {
+                $status_text = "🔒 Locked"; // fallback
+            }
+        ?>
 
-            <div class="capsule">
-                <p><strong><?= htmlspecialchars($capsule['title']) ?></strong> – <?= $status_text ?></p>
+        <div class="capsule">
+            <p><strong><?= htmlspecialchars($capsule['title']) ?></strong> – <?= $status_text ?></p>
 
-                <p>
-                    <?php if ($capsuleRole === 'owner'): ?>
-                        Owner of Capsule
-                    <?php else: ?>
-                        Contributor of Capsule
-                    <?php endif; ?>
-                </p>
+            <p>
+                <?php if ($capsuleRole === 'owner'): ?>
+                    Owner of Capsule
+                <?php else: ?>
+                    Contributor of Capsule
+                <?php endif; ?>
+            </p>
 
-                <!-- Buttons -->
-                <?php if ($state === 'draft'): ?>
-                    <button onclick="window.location.href='edit_capsule.php?id=<?= urlencode($capsule['capsule_id']) ?>'">
-                        ✏️ Edit Capsule
+            <!--buttons -->
+            <?php if ($state === 'draft'): ?>
+                <button onclick="window.location.href='edit_capsule.php?id=<?= urlencode($capsule['capsule_id']) ?>'">
+                    ✏️ Edit Capsule
+                </button>
+                <br><br>
+                <?php if ($capsuleRole === 'owner'): ?>
+                    <button onclick="window.location.href='invite.php?id=<?= urlencode($capsule['capsule_id']) ?>'">
+                        👥 Invite Contributors
                     </button>
-
                     <br><br>
-
-                    <?php if ($capsuleRole === 'owner'): ?>
-                        <button onclick="window.location.href='invite.php?id=<?= urlencode($capsule['capsule_id']) ?>'">
-                            👥 Invite Contributors
-                        </button>
-                        <br><br>
-                        <button onclick="window.location.href='lock_capsule.php?id=<?= urlencode($capsule['capsule_id']) ?>'">
-                            🔒 Lock Capsule
-                        </button>
-                    <?php endif; ?>
-
-                <?php elseif ($state === 'locked'): ?>
-                    <button disabled>🔒 Locked</button>
-
-                <?php elseif ($state === 'released'): ?>
-                    <button onclick="window.location.href='view_capsule.php?id=<?= urlencode($capsule['capsule_id']) ?>'">
-                        👁️ View Capsule
+                    <button onclick="window.location.href='lock_capsule.php?id=<?= urlencode($capsule['capsule_id']) ?>'">
+                        🔒 Lock Capsule
                     </button>
                 <?php endif; ?>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+            <?php elseif ($state === 'locked'): ?>
+                <button disabled>🔒 Locked</button>
+            <?php elseif ($state === 'released'): ?>
+                <button onclick="window.location.href='view_capsule.php?id=<?= urlencode($capsule['capsule_id']) ?>'">
+                    👁️ View Capsule
+                </button>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+<?php endif; ?>
 </main>
 
 <footer class="footer">
