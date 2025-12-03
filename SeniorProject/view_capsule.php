@@ -3,31 +3,24 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/db.php';
+session_start();
 
-$user_id = 5; // Admin ID
+if (!isset($_SESSION['user_id'])) {
+    die("You must be logged in to view this capsule.");
+}
+
+$user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['role'];
+
 $capsule_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 try {
-    // Confirm DB connection
-    if (!isset($conn)) {
-        die("Database connection not established.");
-    }
-
-    // Get user's role
-    $stmtRole = $conn->prepare("SELECT role FROM Users WHERE user_id = ?");
-    $stmtRole->execute([$user_id]);
-    $user = $stmtRole->fetch(PDO::FETCH_ASSOC);
-
-    if (!$user) {
-        die("User not found.");
-    }
-
-    // Admin or moderator can access all capsules
-    if ($user['role'] === 'admin' || $user['role'] === 'moderator') {
+    //admin or moderator can access all capsules
+    if ($user_role === 'admin' || $user_role === 'moderator') {
         $stmt = $conn->prepare("SELECT * FROM Capsule WHERE capsule_id = ?");
         $stmt->execute([$capsule_id]);
     } else {
-        // Normal user — must be assigned
+        //normal user must be assigned
         $stmt = $conn->prepare("
             SELECT c.*, uc.role
             FROM Capsule c
@@ -38,35 +31,20 @@ try {
     }
 
     $capsule = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$capsule) die("Capsule not found or access denied.");
 
-    // Diagnostic messages
-    if (!$capsule) {
-        echo "<h2>Debug Info</h2>";
-        echo "<p>User role: " . htmlspecialchars($user['role']) . "</p>";
-        echo "<p>Capsule ID: " . htmlspecialchars($capsule_id) . "</p>";
-
-        // Show what capsules exist
-        $test = $conn->query("SELECT capsule_id, title FROM Capsule LIMIT 5")->fetchAll(PDO::FETCH_ASSOC);
-        echo "<pre>Existing Capsules:\n" . print_r($test, true) . "</pre>";
-        die("<p style='color:red;'>Capsule not found or you do not have access.</p>");
-    }
-
+    // Locked capsule check
     if ($capsule['state'] === 'locked') {
         $now = new DateTime();
         $release = new DateTime($capsule['release_date']);
-
         if ($now < $release) {
-            die("<h2 style='color:red;'>This capsule is locked until " . 
-                htmlspecialchars($capsule['release_date']) . ".</h2>");
+            die("This capsule is locked until " . htmlspecialchars($capsule['release_date']));
         }
     }
 
-    // Get media
+    //get media files
     $stmtMedia = $conn->prepare("
-        SELECT 
-            m.*,
-            mt.name AS media_type,
-            u.username AS uploader_name
+        SELECT m.*, mt.name AS media_type, u.username AS uploader_name
         FROM Media m
         JOIN MediaType mt ON m.media_type_id = mt.media_type_id
         JOIN Users u ON m.uploader_id = u.user_id
@@ -81,4 +59,3 @@ try {
 } catch (PDOException $e) {
     die("Database error: " . htmlspecialchars($e->getMessage()));
 }
-?>
