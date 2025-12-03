@@ -1,10 +1,10 @@
 -- Users
-INSERT INTO Users (username, email, password_hash, role) VALUES
-('alice', 'alice@example.com', 'hash_pass_alice', 'user'),
-('bob', 'bob@example.com', 'hash_pass_bob', 'moderator'),
-('charlie', 'charlie@example.com', 'hash_pass_charlie', 'user'),
-('dale', 'dale@example.com', 'hash_pass_dale', 'user'),
-('tskipworth', 'skip@example.com', 'hash_pass_skip', 'admin');
+INSERT INTO Users (username, email, role) VALUES
+('alice', 'alice@example.com', 'user'),
+('bob', 'bob@example.com', 'moderator'),
+('charlie', 'charlie@example.com', 'user'),
+('dale', 'dale@example.com', 'user'),
+('tskipworth', 'skip@example.com', 'admin');
 
 -- Capsules
 INSERT INTO Capsule (title, description, state, status, release_date, isReviewed) VALUES
